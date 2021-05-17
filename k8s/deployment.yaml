@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pema
+  labels:
+    app: pema
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pema
+  template:
+    metadata:
+      labels:
+        app: pema
+    spec:
+
+      containers:
+      - name: pema
+        env:
+          - name: SETTINGS_PATH
+            value: "/etc/config/settings"
+          - name: ATLAS_PUBLIC_KEY
+            valueFrom:
+              secretKeyRef:
+                name: pema-mongodb-atlas-keys
+                key: publicKey
+          - name: ATLAS_PRIVATE_KEY
+            valueFrom:
+              secretKeyRef:
+                name: pema-mongodb-atlas-keys
+                key: privateKey
+        # TODO: Replace this with ghcr link
+        image: pema:0.2
+        ports:
+        - containerPort: 5000
+
+        volumeMounts:
+          - name: settings
+            mountPath: /etc/config
+      
+      volumes:
+        - name: settings
+          configMap:
+            name: pema-settings
+            items:
+              - key: settings
+                path: settings

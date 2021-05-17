@@ -1,0 +1,27 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: pema-settings
+data:
+  # Your config goes here
+  settings: |
+    projectId: "<MongoDB Atlas group/project id here>"
+    # Tags are equivalent to labels in prometheus
+    tags:
+      mongodb_version:
+        value: Cluster.MongoDBVersion
+      id:
+        value: Cluster.ID
+      name:
+        value: Cluster.Name
+      group_id:
+        value: Cluster.GroupID
+      aya_type:
+        value:
+          - if: Cluster.Name matches ".*-pr.*"
+            then: "pr"
+          - if: Cluster.Name matches  ".*-develop"
+            then: "develop"
+          - if: Cluster.Name matches  ".*-staging"
+            then: "staging"
+
