@@ -11,6 +11,20 @@ spec:
       app: pema
   template:
     metadata:
+      annotations:
+        ad.datadoghq.com/pema.check_names: |
+          ["prometheus"]
+        ad.datadoghq.com/pema.init_configs: |
+          [{}]
+        ad.datadoghq.com/pema.instances: |
+          [
+            {
+              "prometheus_url":
+                "http://%%host%%:5000/metrics",
+              "metrics": ["*"],
+              "namespace": "pema"
+            }
+          ]
       labels:
         app: pema
     spec:
@@ -30,8 +44,7 @@ spec:
               secretKeyRef:
                 name: pema-mongodb-atlas-keys
                 key: privateKey
-        # TODO: Replace this with ghcr link
-        image: pema:0.2
+        image: ghcr.io/vadasambar/pema:latest
         ports:
         - containerPort: 5000
 
