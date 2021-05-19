@@ -6,6 +6,7 @@ COPY go.mod go.sum ./
 RUN go mod download
 
 COPY ./main.go  ./
+COPY ./pkg ./pkg
 
 ARG CGO_ENABLED=0
 ARG GOOS=linux
