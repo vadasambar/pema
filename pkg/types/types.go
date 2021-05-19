@@ -2,6 +2,7 @@ package types
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -188,7 +189,14 @@ func (e *Exporter) EvaluateLabels(cluster *mongodbatlas.Cluster) (prometheus.Lab
 			if err != nil {
 				return nil, err
 			}
-			promLabels[k] = output.(string)
+
+			s, err := toString(output)
+			if err != nil {
+				return nil, fmt.Errorf("value: %v: %v", v.value, err)
+			}
+
+			promLabels[k] = s
+
 		case ValueTypeCondition:
 			for _, condition := range v.conditions {
 
@@ -199,9 +207,18 @@ func (e *Exporter) EvaluateLabels(cluster *mongodbatlas.Cluster) (prometheus.Lab
 					return nil, err
 				}
 
-				op := output.(bool)
+				op, ok := output.(bool)
+				if !ok {
+					return nil, fmt.Errorf("output of '%s' has to be a bool", condition.If)
+				}
 				if op == true {
-					promLabels[k] = condition.Then
+
+					s, err := toString(output)
+					if err != nil {
+						return nil, fmt.Errorf("condition: %v: %v", condition.Then, err)
+					}
+
+					promLabels[k] = s
 					continue
 				}
 			}
@@ -237,4 +254,19 @@ func (e *Exporter) SetMetrics(clusters []mongodbatlas.Cluster) error {
 		}
 	}
 	return nil
+}
+
+// toString uses a json.Marshal hack
+// to convert anything to a string
+func toString(i interface{}) (string, error) {
+	str, ok := i.(string)
+	if !ok {
+		s, err := json.Marshal(i)
+		if err != nil {
+			return "", err
+		}
+		str = string(s)
+	}
+
+	return str, nil
 }
