@@ -213,7 +213,7 @@ func (e *Exporter) EvaluateLabels(cluster *mongodbatlas.Cluster) (prometheus.Lab
 				}
 				if op == true {
 
-					s, err := toString(output)
+					s, err := toString(condition.Then)
 					if err != nil {
 						return nil, fmt.Errorf("condition: %v: %v", condition.Then, err)
 					}
@@ -238,13 +238,23 @@ func (e *Exporter) EvaluateLabels(cluster *mongodbatlas.Cluster) (prometheus.Lab
 
 // SetMetrics is used to set value of a metric
 func (e *Exporter) SetMetrics(clusters []mongodbatlas.Cluster) error {
-	for _, cluster := range clusters {
-		promLabels, err := e.EvaluateLabels(&cluster)
-		if err != nil {
-			return err
+	// Resets metric to reflect change in clusters
+	// Not doing this requires pod restart
+	for _, metric := range e.Metrics {
+		// TODO: Support other metric types
+		m, ok := metric.(*prometheus.GaugeVec)
+		if !ok {
+			return fmt.Errorf("could not typecast into gauge vector")
 		}
+		m.Reset()
+	}
 
+	for _, cluster := range clusters {
 		for _, metric := range e.Metrics {
+			promLabels, err := e.EvaluateLabels(&cluster)
+			if err != nil {
+				return err
+			}
 			// TODO: Support other metric types
 			m, ok := metric.(*prometheus.GaugeVec)
 			if !ok {
