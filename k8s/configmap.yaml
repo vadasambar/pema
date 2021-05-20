@@ -2,6 +2,7 @@ kind: ConfigMap
 apiVersion: v1
 metadata:
   name: pema-settings
+  namespace: pema
 data:
   # Your config goes here
   settings: |
@@ -25,3 +26,4 @@ data:
           - if: Cluster.Name matches  ".*-staging"
             then: "staging"
 
+---

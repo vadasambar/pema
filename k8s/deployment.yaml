@@ -4,6 +4,7 @@ metadata:
   name: pema
   labels:
     app: pema
+  namespace: pema
 spec:
   replicas: 1
   selector:
@@ -59,3 +60,4 @@ spec:
             items:
               - key: settings
                 path: settings
+---
