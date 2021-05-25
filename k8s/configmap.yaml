@@ -2,7 +2,9 @@ kind: ConfigMap
 apiVersion: v1
 metadata:
   name: pema-settings
-  namespace: pema
+  # Not specifying namespace here is intentional
+  # Check Kustomization.yaml for more info
+  # namespace: pema
 data:
   # Your config goes here
   settings: |
