@@ -1,22 +1,20 @@
 # Note: Please do not change name of this file
 # This filename is used as a key in the ConfigMap
 # Your config goes here
-projectId: "<MongoDB Atlas group/project id here>"
-# Tags are equivalent to labels in prometheus
+# TODO: Find a better way to set projectId (hardcoded for now)
+# Ref: https://docs.atlas.mongodb.com/api/#project-id
+# This is project id for aya-staging MongoDb Atlas Project
+projectId: "<MongoDB Atlas Project ID here>"
 tags:
-  mongodb_version:
-    value: Cluster.MongoDBVersion
-  id:
-    value: Cluster.ID
-  name:
-    value: Cluster.Name
-  group_id:
-    value: Cluster.GroupID
-  aya_type:
-    value:
-      - if: Cluster.Name matches ".*-pr.*"
-        then: "pr"
-      - if: Cluster.Name matches  ".*-develop"
-        then: "develop"
-      - if: Cluster.Name matches  ".*-staging"
-        then: "staging"
+    mongodb_version:
+      value: Cluster.MongoDBVersion
+    id:
+      value: Cluster.ID
+    name:
+      value: Cluster.Name
+    aya_type:
+      value:
+        - if: Cluster.Name matches ".*-staging.*"
+          then: "staging"
+        - if: Cluster.Name matches  ".*-develop"
+          then: "develop"
