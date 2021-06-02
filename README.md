@@ -2,7 +2,7 @@
     <img src="./logo.svg" width="200">
 </p>
 
-## **This is a Prototype (Not suitable for production)**
+## **In Alpha**
 # P|rometheus E|xporter for M|ongoDB A|tlas
 Prometheus metrics exporter for MongoDB Atlas. This acts as a supplement to the official MongoDB Atlas - Datadog Integration. pema has no dependency on Datadog whatsoever. It exposes metrics in Prometheus's format. 
 
